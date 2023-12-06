@@ -10,7 +10,7 @@ class Mutations::Signup < Mutations::BaseMutation
   field :errors , [String], null: false
 
   def resolve(email:, username:, password:, password_confirmation:)
-    uri = URI("http://localhost:3000/users")
+    uri = URI("http://127.0.0.1:3000/users")
     http = Net::HTTP.new(uri.host, uri.port)
     request = Net::HTTP::Post.new(uri.path, 'Content-Type' => 'application/json')
     request.body = {user:{username: username ,email: email,password: password,password_confirmation: password_confirmation}}.to_json
