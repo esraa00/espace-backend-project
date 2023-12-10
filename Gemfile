@@ -79,3 +79,4 @@ gem "mysql2", "~> 0.5.5"
 gem "dotenv-rails", "~> 2.8"
 
 gem 'rack-cors'
+gem "devise-jwt", "~> 0.11.0"
