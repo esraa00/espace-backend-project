@@ -6,7 +6,6 @@ class Mutations::Signin < Mutations::BaseMutation
   argument :password, String, required: true
 
   field :errors , [String], null: false
-  field :bearer_token, String
 
   def resolve(usernameOrEmail:, password:)
     uri = URI("http://127.0.0.1:3000/users/sign_in")
@@ -14,17 +13,17 @@ class Mutations::Signin < Mutations::BaseMutation
     request = Net::HTTP::Post.new(uri.path, 'Content-Type'=>'application/json')
     request.body = {user:{login: usernameOrEmail, password: password}}.to_json
     res = http.request(request)
+    response = context[:response]
 
     if res.is_a?(Net::HTTPSuccess) || res.is_a?(Net::HTTPRedirection)
       bearer_token = res["Authorization"]
+      response.headers['Authorization'] = bearer_token
       {
         errors: [],
-        bearer_token: bearer_token
       }
     else
       {
         errors: [res.body],
-        bearer_token: nil
       }
     end
   end
