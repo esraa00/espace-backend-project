@@ -52,6 +52,8 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+  gem "graphiql-rails", "~> 1.9"
+
 
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   # gem "rack-mini-profiler"
@@ -75,3 +77,6 @@ gem "letter_opener_web", "~> 2.0"
 gem "mysql2", "~> 0.5.5"
 
 gem "dotenv-rails", "~> 2.8"
+
+gem 'rack-cors'
+gem "devise-jwt", "~> 0.11.0"
