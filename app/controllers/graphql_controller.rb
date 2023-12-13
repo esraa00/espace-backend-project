@@ -11,8 +11,9 @@ class GraphqlController < ApplicationController
     query = params[:query]
     operation_name = params[:operationName]
     context = {
-      response: response
-      # current_user: current_user,
+      response: response,
+      request: request,
+      current_user: current_user,
     }
     result = FinalProjectSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result

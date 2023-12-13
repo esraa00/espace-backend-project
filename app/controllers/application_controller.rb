@@ -1,5 +1,7 @@
-class ApplicationController < ActionController::Base
-  skip_before_action :verify_authenticity_token
+class ApplicationController < ActionController::API
+  respond_to :json
+
+  # include Pundit::Authorization
   before_action :configure_permitted_parameters, if: :devise_controller?
   # before_action :log_current_user
   # before_action :log_request_headers
@@ -7,9 +9,9 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    added_attrs = [:username, :email, :password, :password_confirmation, :remember_me]
+    added_attrs = [:display_name, :username, :email, :password, :password_confirmation]
     devise_parameter_sanitizer.permit :sign_up, keys: added_attrs
-    devise_parameter_sanitizer.permit :account_update, keys: added_attrs
+    devise_parameter_sanitizer.permit :account_update, keys: [:display_name, :username, :email,  :current_password, :password, :password_confirmation]
   end
 
   # def log_current_user
@@ -24,3 +26,11 @@ class ApplicationController < ActionController::Base
   #   Rails.logger.info "Request Headers: #{request.headers["Authorization"]}"
   # end
 end
+
+# 12/12/2023 achievement:
+# 1- implemented update user
+# 2- managed to read the authorization header in graphql and pass it to REST api(struggled at first with it)
+# 3- tried to send the header automatically from the frontend but failed
+# 4- tried to make devise to be api only but failed
+# 5- tried to return json responses but failed
+#
