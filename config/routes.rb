@@ -1,5 +1,16 @@
 Rails.application.routes.draw do
+  # TODO: override the route itself instead of creating new route 
+  # method 1:
+  # devise_for :users, :controllers => {:registrations => "users/registrations"} do
+  #     patch '/users/:id', to: 'users/registrations#update', as: 'user_registration'
+  #     put '/users/:id', to: 'users/registrations#update', as: 'user_registration'
+  # end
+
   devise_for :users, :controllers => {:registrations => "users/registrations"}
+  devise_scope :user do
+    put '/users/:id', to: 'users/registrations#update', as: 'custom_update_user_registration'
+  end
+
   if Rails.env.development?
     mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/graphql"
     mount LetterOpenerWeb::Engine, at: "/letter_opener" 

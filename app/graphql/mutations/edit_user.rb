@@ -1,4 +1,5 @@
 class Mutations::EditUser < Mutations::BaseMutation
+  argument :id, String
   argument :display_name, String
   argument :username, String
   argument :email, String
@@ -8,15 +9,15 @@ class Mutations::EditUser < Mutations::BaseMutation
 
   field :errors, [String], null: false
 
-  def resolve(display_name:, username:, email:, current_password:, new_password:, new_password_confirmation:)
-    uri = URI("http://127.0.0.1:3000/users")
+  def resolve(id:, display_name:, username:, email:, current_password:, new_password:, new_password_confirmation:)
+    uri = URI("http://127.0.0.1:3000/users/#{id}")
     http = Net::HTTP.new(uri.host, uri.port)
     bearer_token = context[:request].headers["Authorization"]
     request = Net::HTTP::Put.new(uri.path, {'Content-Type'=>'application/json',"Authorization": bearer_token})
     if current_password.blank?
-      request.body = {user:{display_name: display_name, username: username, email: email}}.to_json
+      request.body = {user:{id: id, display_name: display_name, username: username, email: email}}.to_json
     else
-      request.body = {user:{display_name: display_name, username: username, email: email, current_password: current_password, password: new_password, password_confirmation: new_password_confirmation}}.to_json
+      request.body = {user:{id: id, display_name: display_name, username: username, email: email, current_password: current_password, password: new_password, password_confirmation: new_password_confirmation}}.to_json
     end
     res = http.request(request)
 
