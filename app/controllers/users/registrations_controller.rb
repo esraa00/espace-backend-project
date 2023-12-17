@@ -5,11 +5,13 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
-  before_action :update_user_params_with_password, only: :update
+  before_action :update_user_params, only: :update
   before_action :authenticate_user!, only: :update
 
   def update
     authorize params[:user][:id], policy_class: UserPolicy
+    uploader = AvatarUploader.new
+    uploader.store!(params[:user])
     if (params[:user][:password])
       @user.update_with_password(update_user_params_with_password)
     else
@@ -22,10 +24,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   private
+  def update_user_params
+    params.require(:user).permit(:id, :display_name, :avatar, :username, :email, :current_password, :password, :password_confirmation)
+  end
   def update_user_params_with_password
-    params.require(:user).permit(:id, :display_name, :username, :email, :current_password, :password, :password_confirmation)
+    params.require(:user).permit(:id, :display_name, :avatar, :username, :email, :current_password, :password, :password_confirmation)
   end
   def update_user_params_without_password
-    params.require(:user).permit(:id, :display_name, :username, :email)
+    params.require(:user).permit(:id,:avatar, :display_name, :username, :email)
   end
 end

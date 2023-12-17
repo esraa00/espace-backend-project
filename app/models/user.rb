@@ -3,6 +3,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
         :validatable, :jwt_authenticatable, jwt_revocation_strategy: Devise::JWT::RevocationStrategies::Null
+  mount_uploader :avatar, AvatarUploader
 
   attr_writer :login
   validates_format_of :username, with: /^[a-zA-Z0-9_\.]*$/, :multiline => true

@@ -11,6 +11,7 @@ class GraphqlController < ApplicationController
     query = params[:query]
     operation_name = params[:operationName]
     context = {
+      avatar: params[:avatar],
       response: response,
       request: request,
       current_user: current_user,

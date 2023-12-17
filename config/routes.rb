@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   #     put '/users/:id', to: 'users/registrations#update', as: 'user_registration'
   # end
 
-  devise_for :users, :controllers => {:registrations => "users/registrations"}
+  devise_for :users, defaults: { format: :json }, :controllers => {:registrations => "users/registrations", sessions: 'users/sessions'}
   devise_scope :user do
     put '/users/:id', to: 'users/registrations#update', as: 'custom_update_user_registration'
   end
