@@ -10,6 +10,9 @@ Rails.application.routes.draw do
   devise_scope :user do
     put '/users/:id', to: 'users/registrations#update', as: 'custom_update_user_registration'
   end
+  resources :users, only: [:show] do
+    resources :posts, only: [:create, :destroy, :edit, :update]
+  end
 
   if Rails.env.development?
     mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/graphql"
