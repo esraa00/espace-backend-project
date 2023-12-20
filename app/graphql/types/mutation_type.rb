@@ -7,5 +7,6 @@ module Types
     field :editUser, mutation: Mutations::EditUser
     field :createPost, mutation: Mutations::CreatePost
     field :editPost, mutation: Mutations::EditPostMutation
+    field :destroyPost, mutation: Mutations::DestroyPostMutation
   end
 end

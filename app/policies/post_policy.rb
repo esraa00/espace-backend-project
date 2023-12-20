@@ -3,6 +3,10 @@ class PostPolicy < ApplicationPolicy
 
   end
   def update?
-    @user.id.to_s == record.user_id.to_s
+    @user.id.to_s == @record.user_id.to_s
+  end
+
+  def destroy?
+    @user.id.to_s == @record.user_id.to_s
   end
 end

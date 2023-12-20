@@ -3,6 +3,7 @@ class PostsController < ApplicationController
   before_action :authenticate_user!, only: [:create, :update]
   before_action :create_post_params, only: [:create]
   before_action :update_post_params, only: [:update]
+  before_action :destroy_post_params, only: [:destroy]
 
   def create
     @post = current_user.posts.build({title: params[:post][:title], body: params[:post][:body], user_id: current_user.id})
@@ -51,6 +52,20 @@ class PostsController < ApplicationController
     head :no_content
   end
 
+  def destroy
+    if current_user.id.to_s != params[:user_id].to_s
+      return head :unauthorized
+    end
+    @post = Post.find_by(id: params[:id])
+    if @post.nil?
+      return head :not_found
+    end
+    authorize @post, policy_class: PostPolicy
+    if @post.destroy!
+      return head :no_content
+    end
+  end
+
   private
   
   def serialize_post(post)
@@ -72,5 +87,9 @@ class PostsController < ApplicationController
 
   def update_post_params
     params.require(:post).permit(:id, :user_id, :title, :body, :category_id, :tags_ids)
+  end
+
+  def destroy_post_params
+    params.permit(:id, :user_id)
   end
 end
