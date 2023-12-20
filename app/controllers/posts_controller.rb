@@ -1,6 +1,8 @@
 class PostsController < ApplicationController
-  before_action :authenticate_user!, only: [:create]
-  before_action :set_create_post_params, only: [:create]
+  respond_to :json
+  before_action :authenticate_user!, only: [:create, :update]
+  before_action :create_post_params, only: [:create]
+  before_action :update_post_params, only: [:update]
 
   def create
     @post = current_user.posts.build({title: params[:post][:title], body: params[:post][:body], user_id: current_user.id})
@@ -22,6 +24,33 @@ class PostsController < ApplicationController
     end
   end
 
+  #TODO: if the request failed in the middle of the update, revert it
+  def update
+    authorize params[:post][:user_id], policy_class: UserPolicy
+    @post = Post.find_by(id: params[:post][:id])
+    if @post.nil?
+      return render json: { message: "Post wasn't found", errors: ["post wasn't found"] }, status: :not_found
+    end
+    authorize @post, policy_class: PostPolicy
+    @post.update(title: params[:post][:title], body: params[:post][:title])
+    begin
+      if params[:post][:tags_ids].present?
+        params[:post][:tags_ids].each do |tagId|
+          @post.tags << Tag.find(tagId)
+        end
+      end
+      puts "category is #{params[:post][:category_id]}"
+      if params[:post][:category_id].present?
+        @category = Category.find(params[:post][:category_id])
+        @post.category = @category
+      end
+    rescue ActiveRecord::RecordNotFound => e
+      return render json: { message: "Couldn't update post", errors: [e.message] }, status: :not_found
+    end
+    @post.save
+    head :no_content
+  end
+
   private
   
   def serialize_post(post)
@@ -37,8 +66,11 @@ class PostsController < ApplicationController
     serialized_post
   end
 
-  def set_create_post_params
+  def create_post_params
     params.require(:post).permit(:title, :body, :category_id, :tags_ids)
   end
 
+  def update_post_params
+    params.require(:post).permit(:id, :user_id, :title, :body, :category_id, :tags_ids)
+  end
 end

@@ -6,5 +6,6 @@ module Types
     field :signin , mutation: Mutations::Signin
     field :editUser, mutation: Mutations::EditUser
     field :createPost, mutation: Mutations::CreatePost
+    field :editPost, mutation: Mutations::EditPostMutation
   end
 end
