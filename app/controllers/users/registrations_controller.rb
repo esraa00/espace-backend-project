@@ -13,9 +13,17 @@ class Users::RegistrationsController < Devise::RegistrationsController
     uploader = AvatarUploader.new
     uploader.store!(params[:user])
     if (params[:user][:password])
-      @user.update_with_password(update_user_params_with_password)
+      if @user.update_with_password(update_user_params_with_password)
+        head :no_content
+      else
+        render json: { errors: @user.errors }, status: :unprocessable_entity
+      end
     else
-      @user.update_without_password(update_user_params_without_password)
+      if @user.update_without_password(update_user_params_without_password)
+        head :no_content
+      else 
+        render json: { errors: @user.errors }, status: :unprocessable_entity
+      end
     end
   end
 
