@@ -11,8 +11,9 @@ Rails.application.routes.draw do
     put '/users/:id', to: 'users/registrations#update', as: 'custom_update_user_registration'
   end
   resources :users, only: [:show] do
-    resources :posts, only: [:create, :destroy, :edit, :update]
+    resources :posts, only: [:create, :destroy, :update]
   end
+  resources :posts, only: [:index]
   resources :categories, only:[:index]
 
   if Rails.env.development?
