@@ -18,14 +18,20 @@ module Types
       ids.map { |id| context.schema.object_from_id(id, context) }
     end
 
-    # Add root-level fields here.
-    # They will be entry points for queries on your schema.
+    field :categories, [Types::CategoryType]    
+    def categories
+      uri = URI("http://127.0.0.1:3000/categories")
+      http = Net::HTTP.new(uri.host, uri.port)
+      request = Net::HTTP::Get.new(uri.path, {'Content-Type'=>'application/json'})
 
-    # TODO: remove me
-    field :test_field, String, null: false,
-      description: "An example field added by the generator"
-    def test_field
-      "Hello World!"
+      res = http.request(request)
+      data = JSON.parse(res.body)
+      
+      if res.is_a?(Net::HTTPSuccess)
+        data
+      else
+        nil
+      end
     end
   end
 end

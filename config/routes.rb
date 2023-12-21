@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :users, only: [:show] do
     resources :posts, only: [:create, :destroy, :edit, :update]
   end
+  resources :categories, only:[:index]
 
   if Rails.env.development?
     mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/graphql"
