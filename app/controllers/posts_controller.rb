@@ -5,6 +5,14 @@ class PostsController < ApplicationController
   before_action :update_post_params, only: [:update]
   before_action :destroy_post_params, only: [:destroy]
 
+  def index
+    @posts = Post.includes(:user, :category, :tags).all
+    serialized_posts = @posts.map do |post|
+      serialize_post(post)
+    end
+    render json: { posts: serialized_posts }
+  end
+
   def create
     @post = current_user.posts.build({title: params[:post][:title], body: params[:post][:body], user_id: current_user.id})
     if @post.save
@@ -71,12 +79,9 @@ class PostsController < ApplicationController
   def serialize_post(post)
     serialized_post = PostSerializer.new(post).serializable_hash[:data][:attributes]
     serialized_post[:category] = post.category.nil? ? nil : CategorySerializer.new(post.category).serializable_hash[:data][:attributes]
+    serialized_post[:user] = UserSerializer.new(post.user).serializable_hash[:data][:attributes]
     serialized_post[:tags] = post.tags.map do |tag|
       serialized_tag = TagSerializer.new(tag).serializable_hash[:data][:attributes]
-      {
-          tagId: serialized_tag[:id],
-          name: serialized_tag[:name]
-      }
     end
     serialized_post
   end

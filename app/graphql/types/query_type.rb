@@ -33,5 +33,21 @@ module Types
         nil
       end
     end
+
+    field :posts, [Types::PostType]
+    def posts
+      uri = URI("http://127.0.0.1:3000/posts")
+      http = Net::HTTP.new(uri.host, uri.port)
+      request = Net::HTTP::Get.new(uri.path, {'Content-Type'=>'application/json'})
+
+      res = http.request(request)
+      data = JSON.parse(res.body)
+      
+      if res.is_a?(Net::HTTPSuccess)
+        data["posts"]
+      else
+        nil
+      end
+    end
   end
 end
