@@ -6,8 +6,9 @@ class PostsController < ApplicationController
   before_action :destroy_post_params, only: [:destroy]
   before_action :show_post_params, only: [:show]
 
+  #TODO: why can't I see the query params that is sent to me
   def index
-    @posts = Post.includes(:user, :category, :tags).all
+    @posts = Post.includes(:user, :category, :tags).page(params[:page])
     serialized_posts = @posts.map do |post|
       serialize_post(post)
     end
@@ -107,5 +108,9 @@ class PostsController < ApplicationController
 
   def show_post_params
     params.permit(:id)
+  end
+
+  def index_post_params
+    params.permit(:page)
   end
 end

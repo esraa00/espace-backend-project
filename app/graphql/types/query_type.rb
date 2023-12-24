@@ -34,9 +34,11 @@ module Types
       end
     end
 
-    field :posts, [Types::PostType]
-    def posts
-      uri = URI("http://127.0.0.1:3000/posts")
+    field :posts, [Types::PostType] do
+      argument :page, Int, required: false , default_value: 1
+    end
+    def posts(page:)
+      uri = URI("http://127.0.0.1:3000/posts/page/#{page}")
       http = Net::HTTP.new(uri.host, uri.port)
       request = Net::HTTP::Get.new(uri.path, {'Content-Type'=>'application/json'})
 
