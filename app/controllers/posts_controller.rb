@@ -4,6 +4,7 @@ class PostsController < ApplicationController
   before_action :create_post_params, only: [:create]
   before_action :update_post_params, only: [:update]
   before_action :destroy_post_params, only: [:destroy]
+  before_action :show_post_params, only: [:show]
 
   def index
     @posts = Post.includes(:user, :category, :tags).all
@@ -74,8 +75,14 @@ class PostsController < ApplicationController
     end
   end
 
+  #TODO: how does the user, tags and category came with the user without I called include as above
+  def show
+    @post = Post.find(params[:id])
+    @serialized_post = serialize_post(@post)
+    return render json: { post: @serialized_post}
+  end
+
   private
-  
   def serialize_post(post)
     serialized_post = PostSerializer.new(post).serializable_hash[:data][:attributes]
     serialized_post[:category] = post.category.nil? ? nil : CategorySerializer.new(post.category).serializable_hash[:data][:attributes]
@@ -96,5 +103,9 @@ class PostsController < ApplicationController
 
   def destroy_post_params
     params.permit(:id, :user_id)
+  end
+
+  def show_post_params
+    params.permit(:id)
   end
 end

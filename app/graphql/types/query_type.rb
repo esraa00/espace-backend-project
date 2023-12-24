@@ -42,12 +42,32 @@ module Types
 
       res = http.request(request)
       data = JSON.parse(res.body)
-      
+
       if res.is_a?(Net::HTTPSuccess)
         data["posts"]
       else
         nil
       end
     end
+
+    field :post, Types::PostType do
+      argument :id, ID, required: true
+    end
+    def post(id:)
+      uri = URI("http://127.0.0.1:3000/posts/#{id}")
+      http = Net::HTTP.new(uri.host, uri.port)
+      request = Net::HTTP::Get.new(uri.path, {'Content-Type'=>'application/json'})
+
+      res = http.request(request)
+      data = JSON.parse(res.body)
+
+      if res.is_a?(Net::HTTPSuccess)
+        data["post"]
+      else
+        nil
+      end
+    end
   end
 end
+
+#TODO why any params I send from graphql, falls under the same name as the entity, such as post => { "name":"hell" }

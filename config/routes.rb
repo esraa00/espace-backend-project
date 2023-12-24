@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   resources :users, only: [:show] do
     resources :posts, only: [:create, :destroy, :update]
   end
-  resources :posts, only: [:index]
+  resources :posts, only: [:index, :show]
   resources :categories, only:[:index]
 
   if Rails.env.development?
