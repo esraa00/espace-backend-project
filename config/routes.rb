@@ -18,7 +18,8 @@ Rails.application.routes.draw do
       get 'page/:page', to: 'posts#index'
     end
   end
-  resources :categories, only:[:index]
+  resources :categories, only: [:index]
+  resources :tags, only: [:index]
 
   if Rails.env.development?
     mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/graphql"

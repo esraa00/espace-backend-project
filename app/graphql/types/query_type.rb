@@ -34,6 +34,22 @@ module Types
       end
     end
 
+    field :tags, [Types::TagType]
+    def tags
+      uri = URI("http://127.0.0.1:3000/tags")
+      http = Net::HTTP.new(uri.host, uri.port)
+      request = Net::HTTP::Get.new(uri.path, {'Content-Type'=>'application/json'})
+
+      res = http.request(request)
+      data = JSON.parse(res.body)
+      
+      if res.is_a?(Net::HTTPSuccess)
+        data["tags"]
+      else
+        nil
+      end
+    end
+
     field :posts, [Types::PostType] do
       argument :page, Int, required: false , default_value: 1
     end
