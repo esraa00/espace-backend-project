@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   devise_scope :user do
     put '/users/:id', to: 'users/registrations#update', as: 'custom_update_user_registration'
   end
-  resources :users, only: [:show] do
+  resources :users, only: [:show], module: 'users' do
     resources :posts, only: [:create, :destroy, :update]
   end
   resources :posts, only: [:index, :show] do
