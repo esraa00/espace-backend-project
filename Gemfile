@@ -80,3 +80,11 @@ gem "dotenv-rails", "~> 2.8"
 
 gem 'rack-cors'
 gem "devise-jwt", "~> 0.11.0"
+
+gem "pundit", "~> 2.3"
+
+gem "jsonapi-serializer", "~> 2.2"
+
+gem "carrierwave", "~> 3.0"
+
+gem "multipart-post", "~> 2.3"

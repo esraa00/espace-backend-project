@@ -10,6 +10,7 @@ module FinalProject
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
+    config.api_only = true
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
@@ -23,6 +24,7 @@ module FinalProject
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
+    config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :forbidden
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
   end

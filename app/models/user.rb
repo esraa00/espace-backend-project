@@ -1,13 +1,14 @@
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  has_many :posts
   devise :database_authenticatable, :registerable,
-        :recoverable, :rememberable, :validatable,
-        :jwt_authenticatable, jwt_revocation_strategy: Devise::JWT::RevocationStrategies::Null
+        :validatable, :jwt_authenticatable, jwt_revocation_strategy: Devise::JWT::RevocationStrategies::Null
+  mount_uploader :avatar, AvatarUploader
 
   attr_writer :login
   validates_format_of :username, with: /^[a-zA-Z0-9_\.]*$/, :multiline => true
   validates :username, presence: true, uniqueness: { case_sensitive: false }
+  validates :email, presence: true, uniqueness: { case_sensitive: false }
+  validates :display_name, presence: true
 
   after_create :send_welcome_email
 

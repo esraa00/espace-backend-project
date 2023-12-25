@@ -1,5 +1,8 @@
-class ApplicationController < ActionController::Base
-  skip_before_action :verify_authenticity_token
+class ApplicationController < ActionController::API
+  include ActionController::MimeResponds
+  respond_to :json
+
+  include Pundit::Authorization
   before_action :configure_permitted_parameters, if: :devise_controller?
   # before_action :log_current_user
   # before_action :log_request_headers
@@ -7,9 +10,10 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    added_attrs = [:username, :email, :password, :password_confirmation, :remember_me]
+    puts "this is devise controller"
+    added_attrs = [:display_name, :username, :email, :password, :password_confirmation]
     devise_parameter_sanitizer.permit :sign_up, keys: added_attrs
-    devise_parameter_sanitizer.permit :account_update, keys: added_attrs
+    devise_parameter_sanitizer.permit :account_update, keys: [:id, :display_name, :username, :email,  :current_password, :password, :password_confirmation, :avatar]
   end
 
   # def log_current_user
@@ -24,3 +28,23 @@ class ApplicationController < ActionController::Base
   #   Rails.logger.info "Request Headers: #{request.headers["Authorization"]}"
   # end
 end
+
+# 12/12/2023 achievement:
+# 1- implemented update user 
+# 2- managed to read the authorization header in graphql and pass it to REST api(struggled at first with it)
+# 3- tried to send the header automatically from the frontend but failed
+# 4- tried to make devise to be api only but failed
+# 5- tried to return json responses but failed
+#
+# 13/12/2023
+# 1- implemented pundit for edit user route
+# 2- tried to override the update user route but couldn't so created a new route instead /users/:id, put method
+# 3- try again to make devise be api only + implement json responses instead of views
+# 
+#14/12/2023
+#1- tried to make sign in use cookies instead of jwt header but failed
+#2- tried to allow user to upload avatar, but failed
+#
+#17/12/2023
+#1- trying to make the update avatar work
+#
