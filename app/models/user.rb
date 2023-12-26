@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_many :posts
+  has_many :posts, :dependent => :destroy
   devise :database_authenticatable, :registerable,
         :validatable, :jwt_authenticatable, jwt_revocation_strategy: Devise::JWT::RevocationStrategies::Null
   mount_uploader :avatar, AvatarUploader
