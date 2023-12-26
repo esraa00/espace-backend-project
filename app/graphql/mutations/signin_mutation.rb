@@ -13,18 +13,21 @@ class Mutations::SigninMutation < Mutations::BaseMutation
     request = Net::HTTP::Post.new(uri.path, 'Content-Type'=>'application/json')
     request.body = {user: {login: user[:usernameOrEmail], password: user[:password] }}.to_json
     res = http.request(request)
-    data = JSON.parse(res.body)
 
     if res.is_a?(Net::HTTPSuccess)
       {
         bearer_token: res["Authorization"],
         errors: [],
       }
-    else
+    elsif res.is_a?(Net::HTTPUnauthorized)
       {
         bearer_token: nil,
-        errors: [data["error"]],
+        errors: ["Invalid credentials"],
       }
+    else{
+      bearer_token: nil,
+      errors: ["something went wrong, our team is working on it so please try again later"]
+    }
     end
   end
 end
