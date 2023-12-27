@@ -15,13 +15,12 @@ class Mutations::EditUserMutation < Mutations::BaseMutation
       "user[username]" => user[:username],
       "user[email]" => user[:email]
     }
-    puts "user[:password] is #{user[:password]}"
     if user[:new_password].present?
       form_data["user[password]"] = user[:new_password]
       form_data["user[current_password]"] = user[:current_password]
       form_data["user[password_confirmation]"] = user[:new_password_confirmation]
     end
-    if context[:avatar].present?
+    if !context[:avatar].nil? && context[:avatar] != "null"
       form_data["user[avatar]"] = Multipart::Post::UploadIO.new(context[:avatar].tempfile, context[:avatar].content_type, context[:avatar].original_filename)
     end
     puts "final form_data is #{form_data}"
