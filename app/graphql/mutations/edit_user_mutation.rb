@@ -21,7 +21,7 @@ class Mutations::EditUserMutation < Mutations::BaseMutation
       form_data["user[current_password]"] = user[:current_password]
       form_data["user[password_confirmation]"] = user[:new_password_confirmation]
     end
-    if user[:avatar].present?
+    if context[:avatar].present?
       form_data["user[avatar]"] = Multipart::Post::UploadIO.new(context[:avatar].tempfile, context[:avatar].content_type, context[:avatar].original_filename)
     end
     puts "final form_data is #{form_data}"
