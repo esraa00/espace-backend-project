@@ -86,7 +86,7 @@ module Types
       end
     end
 
-    field :current_user, Types::UserType do
+    field :current_user, Types::CurrentUserType do
       argument :id, ID, required: true
     end
     def current_user(id:)
@@ -97,19 +97,20 @@ module Types
       request = Net::HTTP::Get.new(uri.path, {'Content-Type'=>'application/json','Authorization'=>"Bearer #{bearer_token}"})
 
       res = http.request(request)
-      data = JSON.parse(res.body)
 
       if res.is_a?(Net::HTTPSuccess)
-        puts "data #{data}"
+        data = JSON.parse(res.body)
         data["user"]
+      elsif res.is_a?(Net::HTTPForbidden)
+        {  errors: ["You are not authorized to perform this action"] }
+      elsif res.is_a?(Net::HTTPNotFound)
+        {  errors: ["User does not exist"] }
       else
-        nil
+        { errors: ["couldn't fetch user, please try again later"] }
       end
     end
 
   end
 end
-
-# { post => { :id} , id: 10}
 
 #TODO why any params I send from graphql, falls under the same name as the entity, such as post => { "name":"hell" }
