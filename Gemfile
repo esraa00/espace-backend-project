@@ -88,3 +88,7 @@ gem "jsonapi-serializer", "~> 2.2"
 gem "carrierwave", "~> 3.0"
 
 gem "multipart-post", "~> 2.3"
+
+gem "ransack", "~> 4.1"
+
+gem 'kaminari'

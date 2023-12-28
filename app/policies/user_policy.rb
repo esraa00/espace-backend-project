@@ -9,4 +9,8 @@ class UserPolicy < ApplicationPolicy
   def update?
     @user.id.to_s == record.to_s
   end
+
+  def show?
+    @user.id.to_s == record.to_s
+  end
 end
